@@ -98,7 +98,7 @@ if __name__ == "__main__":
     ])
 
     # List of models to evaluate
-    pipelines = {
+    models = {
         'LogisticRegression': pipeline_lr,
         'DecisionTree': pipeline_dt,
         'RandomForest': pipeline_rf,
@@ -121,7 +121,7 @@ if __name__ == "__main__":
 
     # Iteration to find best estimator
     best_models = {}
-    for model_name, pipe in pipelines.items():
+    for model_name, pipe in models.items():
         # Perform grid search
         grid_search = GridSearchCV(pipe, hyperparameters[model_name], cv=5, verbose=verbose, n_jobs=-1)
 
