@@ -67,7 +67,6 @@ if __name__ == "__main__":
     preprocessor = ColumnTransformer(
         transformers=[
             ('cat', OrdinalEncoder(encoded_missing_value=-1), categorical_features),
-            # ('num', StandardScaler(), numeric_features),
         ], remainder='passthrough')  # drop or passthrough
 
     # List of pipelines
