@@ -1,5 +1,4 @@
 from joblib import load
-from sklearn.metrics import accuracy_score
 import pandas as pd
 import streamlit as st
 
@@ -48,7 +47,6 @@ def predict(model_name: str, df_input: pd.DataFrame):
 
     # Predict data
     y_pred = loaded_model.predict(x_test)
-    # accuracy = accuracy_score(y_test, y_pred)
     accuracy = loaded_model.score(x_test, y_test)
 
     # Convert prediction into dataframe

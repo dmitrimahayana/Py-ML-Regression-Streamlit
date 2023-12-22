@@ -1,5 +1,4 @@
 from joblib import load
-from sklearn.metrics import accuracy_score
 import pandas as pd
 import streamlit as st
 
