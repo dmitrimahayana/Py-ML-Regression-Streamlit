@@ -1,16 +1,14 @@
 import os
-
-import numpy as np
 import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
-from sklearn.model_selection import train_test_split, RandomizedSearchCV, GridSearchCV, cross_val_score
+from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import LabelEncoder, StandardScaler
-from sklearn.preprocessing import OrdinalEncoder, OneHotEncoder
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import OrdinalEncoder
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 from joblib import dump, load
@@ -63,7 +61,6 @@ if __name__ == "__main__":
 
     # Define the columns to be used in each transformer
     categorical_features = ['Underwire', 'Sports', 'Front Opening']
-    # numeric_features = ['Unit Weight in grams']
     target_feature = 'New Size'
 
     # Create a ColumnTransformer to handle different feature types
@@ -123,42 +120,40 @@ if __name__ == "__main__":
     x_train, x_test, y_train, y_test = train_test_split(df_input.drop(target_feature, axis=1), df_input[target_feature],
                                                         test_size=0.2, random_state=42)
 
-    # # Iteration to find best estimator
-    # best_models = {}
-    # for model_name, pipe in pipelines.items():
-    #     # Perform grid search
-    #     grid_search = GridSearchCV(pipe, hyperparameters[model_name], cv=5, verbose=verbose, n_jobs=-1)
-    #
-    #     # Train the model inside Grid>Pipeline
-    #     grid_search.fit(x_train, y_train)
-    #
-    #     # Add model and params
-    #     best_models[model_name] = {
-    #         'name': model_name,
-    #         'model': grid_search.best_estimator_,
-    #         'params': grid_search.best_params_
-    #     }
-    #     # cv_scores = cross_val_score(model, x_train, y_train, cv=5)
-    #     # print(f"{name}: Mean CV accuracy = {np.mean(cv_scores)}")
-    #
-    # for model_name, model_info in best_models.items():
-    #     # Check Accuracy
-    #     accuracy = model_info['model'].score(x_test, y_test)
-    #     print(f"\n1st Accuracy {model_name}: {accuracy}")
-    #     y_pred = model_info['model'].predict(x_test)
-    #     accuracy = accuracy_score(y_test, y_pred)
-    #     print(f"2nd Accuracy {model_name}: {accuracy}")
-    #
-    #     # Save model
-    #     model_folder = f"Model/Glamorise Estimated Weight/"
-    #     model_filename = f"{model_info['name']}.joblib"
-    #     isExist = os.path.exists(model_folder)
-    #     if not isExist:
-    #         os.makedirs(model_folder)
-    #         print(f"The new directory {model_folder} is created!")
-    #     # Create a new model file
-    #     dump(model_info['model'], model_folder + model_filename)
-    #     print(f"The best model is saved as {model_folder + model_filename}")
+    # Iteration to find best estimator
+    best_models = {}
+    for model_name, pipe in pipelines.items():
+        # Perform grid search
+        grid_search = GridSearchCV(pipe, hyperparameters[model_name], cv=5, verbose=verbose, n_jobs=-1)
+
+        # Train the model inside Grid>Pipeline
+        grid_search.fit(x_train, y_train)
+
+        # Add model and params
+        best_models[model_name] = {
+            'name': model_name,
+            'model': grid_search.best_estimator_,
+            'params': grid_search.best_params_
+        }
+
+    for model_name, model_info in best_models.items():
+        # Check Accuracy
+        accuracy = model_info['model'].score(x_test, y_test)
+        print(f"\n1st Accuracy {model_name}: {accuracy}")
+        y_pred = model_info['model'].predict(x_test)
+        accuracy = accuracy_score(y_test, y_pred)
+        print(f"2nd Accuracy {model_name}: {accuracy}")
+
+        # Save model
+        model_folder = f"Model/Glamorise Estimated Weight/"
+        model_filename = f"{model_info['name']}.joblib"
+        isExist = os.path.exists(model_folder)
+        if not isExist:
+            os.makedirs(model_folder)
+            print(f"The new directory {model_folder} is created!")
+        # Create a new model file
+        dump(model_info['model'], model_folder + model_filename)
+        print(f"The best model is saved as {model_folder + model_filename}")
 
     # Load model from local folder
     model_folder = f"Model/Glamorise Estimated Weight/"
