@@ -48,7 +48,8 @@ def predict(model_name: str, df_input: pd.DataFrame):
 
     # Predict data
     y_pred = loaded_model.predict(x_test)
-    accuracy = accuracy_score(y_test, y_pred)
+    # accuracy = accuracy_score(y_test, y_pred)
+    accuracy = loaded_model.score(x_test, y_test)
 
     # Convert prediction into dataframe
     df_y_pred = pd.DataFrame(y_pred, columns=['Predictions'])
@@ -62,11 +63,6 @@ def predict(model_name: str, df_input: pd.DataFrame):
 
     return df_combined, accuracy
 
-
-with st.sidebar:
-    st.link_button("Go to EDA", "https://streamlit.io/gallery")
-    st.link_button("Go to Machine Learning", "https://streamlit.io/gallery")
-
 # Define dataset
 filename = "Glamorise Estimated Weight from Supplier.xlsx"
 file_path = f"Dataset/{filename}"
@@ -74,15 +70,16 @@ df_input = pd.read_excel(open(file_path, 'rb'), skiprows=1, sheet_name='Sheet1')
 df_input = cleanse_data(df_input)
 
 models = [
-    'LogisticRegression',
-    'DecisionTree',
     'RandomForest',
+    'KNN',
+    'DecisionTree',
+    'LogisticRegression',
     'SVM',
-    'KNN'
 ]
-st.title('Glamorise Weight Dataset :sunglasses:')
+
+st.header('Glamorise Weight Dataset :sunglasses:', divider='rainbow')
 for model in models:
-    st.subheader(f'This is a prediction result using model _{model}_')
+    st.header(f'Prediction _{model}_ Model')
     df_pred, accuracy = predict(model, df_input)
     st.subheader(f'Accuracy Score _{round(accuracy, 2)}_')
     st.dataframe(df_pred, hide_index=True, use_container_width=True)
